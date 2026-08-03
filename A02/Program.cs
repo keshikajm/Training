@@ -16,6 +16,7 @@ for (int i = 1; k != n && k != 0; i++) {
       i--;    
       continue;
    }
+   k = guess;
    if (k == 0) WriteLine ($"The gamed ended. The number is {n}");
    else if (k == n) WriteLine ("You guessed correctly");
    else if (k > n) WriteLine ("Your guess is too high");
