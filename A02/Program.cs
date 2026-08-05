@@ -8,22 +8,20 @@
 // ------------------------------------------------------------------------------------------------
 using static System.Console;
 
-int randomNumber = new Random ().Next (1, 101);
+int randomNum = new Random ().Next (1, 101), guess = 0;
+const int quit = -1;
 WriteLine ("Welcome to the Guess Game! Guess the number between 1 and 100.\n" +
-           "Enter 0 anytime to quit and reveal the secret number.\n");
-int guess = -1;
-for (int i = 1; guess != randomNumber && guess != 0; i++) {
+           "Enter -1 anytime to quit and reveal the secret number.\n");
+for (int i = 1; guess != randomNum && guess != quit; i++) {
    Write ("Enter a number between 1 and 100: ");
-   if (!int.TryParse (ReadLine (), out int parsedGuess) || parsedGuess < 0 || parsedGuess > 100) {
-      WriteLine ("Invalid input! Enter a whole number between 1 and 100, or 0 to quit.");
+   if (!int.TryParse (ReadLine (), out guess) || guess < 1 || guess > 100) {
+      WriteLine (guess == quit ? $"The game ended. The number is {randomNum}" : $"Invalid input!");
       i--; continue;
    }
-   guess = parsedGuess;
-   if (guess == 0) WriteLine ($"The game ended. The number is {randomNumber}");
-   else WriteLine (guess == randomNumber ? "You guessed correctly"
-                                         : guess > randomNumber ? "Your guess is too high"
-                                                                : "Your guess is too low");
-   if (i >= 7 && guess != randomNumber && guess != 0)
+   WriteLine (guess == randomNum ? "You guessed correctly"
+                                 : guess > randomNum ? "Your guess is too high"
+                                                     : "Your guess is too low");
+   if (i >= 7 && guess != randomNum && guess != quit)
       WriteLine ("You are exceeding the minimum number of guesses.\n" +
-                 "Guess soon or enter 0 to quit!");
+                 "Guess soon or enter -1 to quit!");
 }
