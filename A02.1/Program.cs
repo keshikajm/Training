@@ -3,25 +3,23 @@
 // Copyright (c) Metamation India.
 // ------------------------------------------------------------------------------------------------
 // Program.cs
-// Program to implement a number guessing game with random number generation, user input
-// validation, guessing hints, and quit functionality.
+// Program to guess a user's number using binary remainder logic and yes/no questions.
 // ------------------------------------------------------------------------------------------------
 using static System.Console;
 
-int randomNum = new Random ().Next (1, 101), guess = 0;
-const int quit = -1;
-WriteLine ("Welcome to the Guess Game! Guess the number between 1 and 100.\n" +
-           "Enter -1 anytime to quit and reveal the secret number.\n");
-for (int i = 1; guess != randomNum && guess != quit; i++) {
-   Write ("Enter a number between 1 and 100: ");
-   if (!int.TryParse (ReadLine (), out guess) || guess < 1 || guess > 100) {
-      WriteLine (guess == quit ? $"The game ended. The number is {randomNum}" : $"Invalid input!");
-      i--; continue;
+WriteLine ("Think of a number between 1 and 100, I'll guess it!\n" +
+           "Type 'Y' for yes and 'N' for no!");
+int number = 0, divisor = 2, remainder = 1, i = 0;
+while (i < 7) {
+   Write ($"Is the remainder when divided by {divisor} >= {remainder} ? ");
+   string answer = (ReadLine () ?? "").ToUpper ();
+   if (answer != "Y" && answer != "N") {
+      WriteLine ("Invalid input!");
+      continue;
    }
-   WriteLine (guess == randomNum ? "You guessed correctly"
-                                 : guess > randomNum ? "Your guess is too high"
-                                                     : "Your guess is too low");
-   if (i >= 7 && guess != randomNum && guess != quit)
-      WriteLine ("You are exceeding the minimum number of guesses.\n" +
-                 "Guess soon or enter -1 to quit!");
+   if (answer == "Y") number += remainder;
+   divisor *= 2;
+   remainder *= 2;
+   i++;
 }
+WriteLine ($"The number you thought of is {number}");
