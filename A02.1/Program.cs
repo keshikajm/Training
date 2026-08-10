@@ -7,17 +7,18 @@
 // ------------------------------------------------------------------------------------------------
 using static System.Console;
 
-WriteLine ("Think of a number between 1 and 100, I'll guess it!\n" +
+WriteLine ("Think of a number between 1 and 127, I'll guess it!\n" +
            "Type 'Y' for yes and 'N' for no!");
 int number = 0, divisor = 2, remainder = 1, i = 0;
 while (i < 7) {
    Write ($"Is the remainder when divided by {divisor} >= {remainder} ? ");
-   string answer = (ReadLine () ?? "").ToUpper ();
-   if (answer != "Y" && answer != "N") {
+   ConsoleKey answer = ReadKey ().Key;
+   WriteLine ();
+   if (answer != ConsoleKey.Y && answer != ConsoleKey.N) {
       WriteLine ("Invalid input!");
       continue;
    }
-   if (answer == "Y") number += remainder;
+   if (answer == ConsoleKey.Y) number += remainder;
    divisor *= 2;
    remainder *= 2;
    i++;
