@@ -12,17 +12,24 @@ WriteLine ("Think of a number between 0 and 127, I'll guess it!\n" +
 int number = 0, divisor = 2, remainder = 1, i = 0;
 for (; i < 7; i++) {
    Write ($"When divided by {divisor}, is the remainder >= {remainder} ? ");
-   ConsoleKey answer = ReadKey ().Key;
-   WriteLine ();
+   ConsoleKey answer = ReadKey (true).Key;
    switch (answer) {
       case ConsoleKey.Y:
+         StringColor ("Y", ConsoleColor.Yellow);
          number += remainder; break;
       case ConsoleKey.N:
+         StringColor ("N", ConsoleColor.Cyan);
          break;
       default:
-         WriteLine ("Invalid input!");
+         StringColor ("Invalid Input", ConsoleColor.Red); WriteLine ();
          i--; continue;
    }
+   WriteLine ();
    divisor *= 2; remainder *= 2;
 }
-WriteLine ($"The number you thought of is {number}");
+StringColor ($"The number you thought of is {number}", ConsoleColor.Green);
+void StringColor (string text, ConsoleColor color) {
+   ForegroundColor = color;
+   Write (text);
+   ResetColor ();
+}
