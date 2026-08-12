@@ -9,8 +9,8 @@ using static System.Console;
 
 WriteLine ("Think of a number between 0 and 127, I'll guess it!\n" +
            "Type 'Y' for yes and 'N' for no!");
-int number = 0, divisor = 2, remainder = 1, i;
-for (i = 0; i < 7; i++) {
+int number = 0, divisor = 2, remainder = 1;
+for (int i = 0; i < 7; i++) {
    Write ($"When divided by {divisor}, is the remainder >= {remainder} ? ");
    ConsoleKey answer = ReadKey (true).Key;
    switch (answer) {
@@ -21,16 +21,15 @@ for (i = 0; i < 7; i++) {
          PrintText ("N", ConsoleColor.Cyan);
          break;
       default:
-         PrintText ("Invalid Input\n", ConsoleColor.Red);
+         PrintText ("Invalid Input", ConsoleColor.Red);
          i--; continue;
    }
-   WriteLine ();
    divisor *= 2; remainder *= 2;
 }
 PrintText ($"The number you thought of is {number}", ConsoleColor.Green);
 
 void PrintText (string text, ConsoleColor color) {
    ForegroundColor = color;
-   Write (text);
+   WriteLine (text);
    ResetColor ();
 }
