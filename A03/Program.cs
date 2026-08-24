@@ -10,7 +10,7 @@ using static System.Console;
 
 char[] letters = { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
 char requiredLetter = letters[0];
-string[] wordList = File.ReadAllLines (@"c:/academyassignment/word_list.txt");
+string[] wordList = File.ReadAllLines ("word_list.txt");
 List<(string word, int score, bool pangram)> results = new ();
 foreach (string line in wordList) {
    string word = line.Trim ().ToUpper ();
