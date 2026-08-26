@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="word_list.txt" />
+    <None Remove="spellbee_wordlist.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="word_list.txt">
+    <Content Include="spellbee_wordlist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

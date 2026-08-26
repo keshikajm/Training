@@ -10,8 +10,8 @@ using static System.Console;
 
 char[] letters = { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
 char requiredLetter = letters[0];
-string[] wordList = File.ReadAllLines ("word_list.txt");
-List<(string word, int score, bool pangram)> results = new ();
+string[] wordList = File.ReadAllLines ("spellbee_wordlist.txt");
+List<(string word, int score, bool pangram)> results = [];
 foreach (string line in wordList) {
    string word = line.Trim ().ToUpper ();
    if (word.Length < 4) continue;
@@ -27,11 +27,11 @@ results.Sort ((a, b) => {
    return scoreComparison != 0 ? scoreComparison : a.word.CompareTo (b.word);
 });
 int total = 0;
-foreach (var result in results) {
-   if (result.pangram) ForegroundColor = ConsoleColor.Green;
+foreach (var (word, score, pangram) in results) {
+   if (pangram) ForegroundColor = ConsoleColor.Green;
    else ResetColor ();
-   WriteLine ($"{result.score,2}. {result.word}");
-   total += result.score;
+   WriteLine ($"{score,2}. {word}");
+   total += score;
 }
 ResetColor ();
 WriteLine ();
