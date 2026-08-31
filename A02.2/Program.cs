@@ -1,7 +1,7 @@
 ﻿// ------------------------------------------------------------------------------------------------
 // Training ~ A training program for new joinees at Metamation, Batch- July 2026.
 // Copyright (c) Metamation India.
-// -----------------------------------------------------------------------s-------------------------
+// -----------------------------------------------------------------------s------------------------
 // Program.cs
 // Program to guess a user's number using high, low, correct responses, restart the game in case
 // of inconsistent responses and allow the user to play again or exit the game.
@@ -17,10 +17,13 @@ while (true) {
 
 bool PlayGame (ref bool showInstructions) {
    var range = (low: 1, high: 100);
+   bool restart = false;
    if (showInstructions) {
       WriteLine ("Think of a number between 1 and 100. I'll try to guess it.\n" +
-                 "Enter H if your number is higher than my guess, L if your number is lower " +
-                 "than my guess, C if correct or R to restart!");
+                 "Enter H if your number is higher than my guess,\n" +
+                 "      L if your number is lower than my guess,\n" +
+                 "      C if my guess is correct, or\n" +
+                 "      R to restart the game!\n");
       showInstructions = false;
    }
    while (range.low <= range.high) {
@@ -37,24 +40,24 @@ bool PlayGame (ref bool showInstructions) {
          case ConsoleKey.R:
             PrintText ("R\n", ConsoleColor.DarkGray);
             WriteLine ("The game is starting over.\n");
-            range = (0, -1); break;
+            restart = true; range = (0, -1); break;
          case ConsoleKey.C:
             PrintText ("C", ConsoleColor.Green);
-            PrintText ($"I guessed your number.The number is {guess}.\n", ConsoleColor.Cyan);
-            range = (0, -1); break;
+            PrintText ($"I guessed your number. The number is {guess}.\n", ConsoleColor.Cyan);
+            restart = false; range = (0, -1); break;
          default:
             PrintText ("Invalid input!", ConsoleColor.Red);
             continue;
       }
-      if (range.low > range.high && answer != ConsoleKey.C) {
+      if (range.low > range.high && !restart && answer != ConsoleKey.C) {
          WriteLine ("Your responses are inconsistent. No number satisfies the responses.\n");
          break;
       }
    }
-   return false;
+   return restart;
 }
 
-   bool PlayAgain (ref bool showInstructions) {
+bool PlayAgain (ref bool showInstructions) {
    while (true) {
       Write ("Play again?(Y/N): ");
       ConsoleKey playAgain = ReadKey (true).Key;
