@@ -1,7 +1,7 @@
 ﻿// ------------------------------------------------------------------------------------------------
 // Training ~ A training program for new joinees at Metamation, Batch- July 2026.
 // Copyright (c) Metamation India.
-// -----------------------------------------------------------------------s------------------------
+// ------------------------------------------------------------------------------------------------
 // Program.cs
 // Program to guess a user's number using high, low, correct responses, restart the game in case
 // of inconsistent responses and allow the user to play again or exit the game.
@@ -16,7 +16,7 @@ while (true) {
 }
 
 bool PlayGame (ref bool showInstructions) {
-   var range = (low: 1, high: 100);
+   var (lowerLimit, upperLimit) = (1, 100);
    if (showInstructions) {
       WriteLine ("Think of a number between 1 and 100. I'll try to guess it.\n" +
                  "Enter H if your number is higher than my guess,\n" +
@@ -25,17 +25,17 @@ bool PlayGame (ref bool showInstructions) {
                  "      R to restart the game!\n");
       showInstructions = false;
    }
-   while (range.low <= range.high) {
-      int guess = (range.low + range.high) / 2;
+   while (lowerLimit <= upperLimit) {
+      int guess = (lowerLimit + upperLimit) / 2;
       Write ($"Is your number {guess}? ");
       ConsoleKey answer = ReadKey (true).Key;
       switch (answer) {
          case ConsoleKey.H:
             PrintText ("H", ConsoleColor.Magenta);
-            range.low = guess + 1; break;
+            lowerLimit = guess + 1; break;
          case ConsoleKey.L:
             PrintText ("L", ConsoleColor.Yellow);
-            range.high = guess - 1; break;
+            lowerLimit = guess - 1; break;
          case ConsoleKey.R:
             PrintText ("R\n", ConsoleColor.DarkGray);
             WriteLine ("The game is starting over.\n");
@@ -48,7 +48,7 @@ bool PlayGame (ref bool showInstructions) {
             PrintText ("Invalid input!", ConsoleColor.Red);
             continue;
       }
-      if (range.low > range.high) {
+      if (lowerLimit > upperLimit) {
          WriteLine ("Your responses are inconsistent. No number satisfies the responses.\n");
          return false;
       }
