@@ -17,7 +17,6 @@ while (true) {
 
 bool PlayGame (ref bool showInstructions) {
    var range = (low: 1, high: 100);
-   bool restart = false;
    if (showInstructions) {
       WriteLine ("Think of a number between 1 and 100. I'll try to guess it.\n" +
                  "Enter H if your number is higher than my guess,\n" +
@@ -40,21 +39,21 @@ bool PlayGame (ref bool showInstructions) {
          case ConsoleKey.R:
             PrintText ("R\n", ConsoleColor.DarkGray);
             WriteLine ("The game is starting over.\n");
-            restart = true; range = (0, -1); break;
+            return true;
          case ConsoleKey.C:
             PrintText ("C", ConsoleColor.Green);
             PrintText ($"I guessed your number. The number is {guess}.\n", ConsoleColor.Cyan);
-            restart = false; range = (0, -1); break;
+            return false;
          default:
             PrintText ("Invalid input!", ConsoleColor.Red);
             continue;
       }
-      if (range.low > range.high && !restart && answer != ConsoleKey.C) {
+      if (range.low > range.high) {
          WriteLine ("Your responses are inconsistent. No number satisfies the responses.\n");
-         break;
+         return false;
       }
    }
-   return restart;
+   return false;
 }
 
 bool PlayAgain (ref bool showInstructions) {
