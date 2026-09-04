@@ -35,7 +35,7 @@ bool PlayGame (ref bool showInstructions) {
             lowerLimit = guess + 1; break;
          case ConsoleKey.L:
             PrintText ("L", ConsoleColor.Yellow);
-            lowerLimit = guess - 1; break;
+            upperLimit = guess - 1; break;
          case ConsoleKey.R:
             PrintText ("R\n", ConsoleColor.DarkGray);
             WriteLine ("The game is starting over.\n");
