@@ -9,14 +9,13 @@
 using System.Text;
 using static System.Console;
 
+#region class Program------------------------------------------------------------------------------
 class Program {
-   const int n = 8;
-
    static void Main () {
       OutputEncoding = Encoding.UTF8;
       int[] board = new int[n];
       var solutions = new List<int[]> ();
-      queensSolver.sSolve (board, solutions);
+      QueensSolver.sSolve (board, solutions);
       var uniqueSolutions = BoardSymmetry.sGetUniqueSolutions (solutions);
       WriteLine ($"Total solutions: {solutions.Count}");
       WriteLine ($"Unique solutions: {uniqueSolutions.Count}\n");
@@ -26,6 +25,7 @@ class Program {
       sDisplaySolutions (toShow);
    }
 
+   #region Implementation--------------------------------------------
    // Prompts until the user presses A or U, then reports the choice
    static bool sAskShowUnique () {
       while (true) {
@@ -53,10 +53,18 @@ class Program {
          count++;
       }
    }
-}
+   #endregion
 
+   #region Constants-------------------------------------------------
+   const int n = 8;
+   #endregion
+}
+#endregion
+
+#region class QueensSolver-------------------------------------------------------------------------
 // Finds every valid arrangement of non-attacking queens via backtracking
-static class queensSolver {
+static class QueensSolver {
+   #region Implementation--------------------------------------------
    public static void sSolve (int[] board, List<int[]> solutions) {
       int size = board.Length;
       var usedColumn = new bool[size];
@@ -98,10 +106,14 @@ static class queensSolver {
       usedDiagUp[row + col] = iValue;
       usedDiagDown[row - col + usedColumn.Length - 1] = iValue;
    }
+   #endregion
 }
+#endregion
 
+#region class BoardSymmetry------------------------------------------------------------------------
 //Removes solutions that are the same after rotation or reflection
 static class BoardSymmetry {
+   #region Implementation--------------------------------------------
    public static List<int[]> sGetUniqueSolutions (List<int[]> solutions) {
       var seen = new HashSet<string> ();
       var unique = new List<int[]> ();
@@ -146,10 +158,14 @@ static class BoardSymmetry {
          mirrored[row] = size - 1 - board[row];
       return mirrored;
    }
+   #endregion
 }
+#endregion
 
+#region class BoardPrinter-------------------------------------------------------------------------
 // Draws a single board using Unicode box-drawing characters
 static class BoardPrinter {
+   #region Implementation--------------------------------------------
    public static void sPrintBoard (int[] board) {
       WriteLine ("┌───┬───┬───┬───┬───┬───┬───┬───┐");
       for (int row = 0; row < board.Length; row++) {
@@ -162,5 +178,6 @@ static class BoardPrinter {
       }
       WriteLine ("└───┴───┴───┴───┴───┴───┴───┴───┘\n");
    }
+   #endregion
 }
-
+#endregion
