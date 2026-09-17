@@ -13,10 +13,10 @@ using static System.Console;
 class Program {
    static void Main () {
       OutputEncoding = Encoding.UTF8;
-      int[] board = new int[n];
+      int[] board = new int[N];
       var solutions = new List<int[]> ();
-      QueensSolver.FindSolutions (board, solutions);
-      var uniqueSolutions = FilterUniqueSolutions.GetUniqueSolutions (solutions);
+      FindSolutions (board, solutions);
+      var uniqueSolutions = GetUniqueSolutions (solutions);
       WriteLine ($"Total solutions: {solutions.Count}");
       WriteLine ($"Unique solutions: {uniqueSolutions.Count}\n");
       bool iShowUnique = SelectSolutions ();
@@ -43,7 +43,7 @@ class Program {
       int count = 1;
       foreach (int[] solution in toShow) {
          WriteLine ($"Solution {count} of {toShow.Count}:");
-         BoardPrinter.PrintBoard (solution);
+         PrintBoard (solution);
          if (count < toShow.Count) {
             Write ("Press any key for next solution, or Q to quit");
             bool iQuit = ReadKey (true).Key == ConsoleKey.Q;
@@ -53,68 +53,52 @@ class Program {
          count++;
       }
    }
-   #endregion
 
-   #region Constants-------------------------------------------------
-   const int n = 8;
-   #endregion
-}
-#endregion
-
-#region class QueensSolver-------------------------------------------------------------------------
-static class QueensSolver {
-   #region Implementation--------------------------------------------
    // Finds every valid arrangement of non-attacking queens via backtracking
-   public static void FindSolutions (int[] board, List<int[]> solutions) {
+   static void FindSolutions (int[] board, List<int[]> solutions) {
       int size = board.Length;
-      var usedColumn = new bool[size];
-      var usedDiagUp = new bool[2 * size - 1];
-      var usedDiagDown = new bool[2 * size - 1];
-      PlaceQueens (board, 0, solutions, usedColumn, usedDiagUp, usedDiagDown);
+      var iUsedColumn = new bool[size];
+      var iUsedDiagUp = new bool[2 * size - 1];
+      var iUsedDiagDown = new bool[2 * size - 1];
+      PlaceQueens (board, 0, solutions, iUsedColumn, iUsedDiagUp, iUsedDiagDown);
    }
 
    // Uses backtracking to find and store all valid solutions
    static void PlaceQueens (int[] board, int row, List<int[]> solutions,
-       bool[] usedColumn, bool[] usedDiagUp, bool[] usedDiagDown) {
+       bool[] iUsedColumn, bool[] iUsedDiagUp, bool[] iUsedDiagDown) {
       if (row == board.Length) {
          solutions.Add ((int[])board.Clone ());
          return;
       }
       for (int col = 0; col < board.Length; col++) {
-         if (IsSafe (row, col, usedColumn, usedDiagUp, usedDiagDown)) {
+         if (IsSafe (row, col, iUsedColumn, iUsedDiagUp, iUsedDiagDown)) {
             board[row] = col;
-            UpdatePosition (row, col, usedColumn, usedDiagUp, usedDiagDown, true);
-            PlaceQueens (board, row + 1, solutions, usedColumn, usedDiagUp, usedDiagDown);
-            UpdatePosition (row, col, usedColumn, usedDiagUp, usedDiagDown, false); // backtrack
+            UpdatePosition (row, col, iUsedColumn, iUsedDiagUp, iUsedDiagDown, true);
+            PlaceQueens (board, row + 1, solutions, iUsedColumn, iUsedDiagUp, iUsedDiagDown);
+            UpdatePosition (row, col, iUsedColumn, iUsedDiagUp, iUsedDiagDown, false); // backtrack
          }
       }
    }
 
    // O(1) column/diagonal lookup instead of rescanning every prior row
-   static bool IsSafe (int row, int col, bool[] usedColumn, bool[] usedDiagUp,
-                       bool[] usedDiagDown) {
-      bool iColumnUsed = usedColumn[col];
-      bool iDiagUpUsed = usedDiagUp[row + col];
-      bool iDiagDownUsed = usedDiagDown[row - col + usedColumn.Length - 1];
+   static bool IsSafe (int row, int col, bool[] iUsedColumn, bool[] iUsedDiagUp,
+                       bool[] iUsedDiagDown) {
+      bool iColumnUsed = iUsedColumn[col];
+      bool iDiagUpUsed = iUsedDiagUp[row + col];
+      bool iDiagDownUsed = iUsedDiagDown[row - col + iUsedColumn.Length - 1];
       return !iColumnUsed && !iDiagUpUsed && !iDiagDownUsed;
    }
 
    // Marks or clears a placement's column/diagonal occupancy
-   static void UpdatePosition (int row, int col, bool[] usedColumn, bool[] usedDiagUp,
-                               bool[] usedDiagDown, bool iValue) {
-      usedColumn[col] = iValue;
-      usedDiagUp[row + col] = iValue;
-      usedDiagDown[row - col + usedColumn.Length - 1] = iValue;
+   static void UpdatePosition (int row, int col, bool[] iUsedColumn, bool[] iUsedDiagUp,
+                               bool[] iUsedDiagDown, bool iValue) {
+      iUsedColumn[col] = iValue;
+      iUsedDiagUp[row + col] = iValue;
+      iUsedDiagDown[row - col + iUsedColumn.Length - 1] = iValue;
    }
-   #endregion
-}
-#endregion
 
-#region class FilterUniqueSolutions----------------------------------------------------------------
-static class FilterUniqueSolutions {
-   #region Implementation--------------------------------------------
    // Removes solutions that are the same after rotation or reflection
-   public static List<int[]> GetUniqueSolutions (List<int[]> solutions) {
+   static List<int[]> GetUniqueSolutions (List<int[]> solutions) {
       var seen = new HashSet<string> ();
       var unique = new List<int[]> ();
       foreach (int[] solution in solutions) {
@@ -124,7 +108,7 @@ static class FilterUniqueSolutions {
       return unique;
    }
 
-   // Creates a common key for solutions with the same symmetry.
+   // Creates a common key for solutions with the same symmetry
    static string CanonicalKey (int[] board) {
       var forms = new List<string> ();
       int[] current = (int[])board.Clone ();
@@ -158,15 +142,9 @@ static class FilterUniqueSolutions {
          mirrored[row] = size - 1 - board[row];
       return mirrored;
    }
-   #endregion
-}
-#endregion
 
-#region class BoardPrinter-------------------------------------------------------------------------
-// Draws a single board using Unicode box-drawing characters
-static class BoardPrinter {
-   #region Implementation--------------------------------------------
-   public static void PrintBoard (int[] board) {
+   // Draws a single board using Unicode box-drawing characters
+   static void PrintBoard (int[] board) {
       WriteLine ("┌───┬───┬───┬───┬───┬───┬───┬───┐");
       for (int row = 0; row < board.Length; row++) {
          Write ("│");
@@ -178,6 +156,10 @@ static class BoardPrinter {
       }
       WriteLine ("└───┴───┴───┴───┴───┴───┴───┴───┘\n");
    }
+   #endregion
+
+   #region Constants-------------------------------------------------
+   const int N = 8;
    #endregion
 }
 #endregion
