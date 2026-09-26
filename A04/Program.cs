@@ -9,9 +9,11 @@
 using static System.Console;
 
 Dictionary<char, int> frequency = [];
-foreach (string word in File.ReadAllLines ("spellbee_wordlist.txt")) {
-   foreach (char c in word.ToUpper ())
-      if (c >= 'A' && c <= 'Z') frequency[c] = frequency.GetValueOrDefault (c) + 1;
+foreach (string word in File.ReadLines ("spellbee_wordlist.txt")) {
+   foreach (char c in word.ToUpper ()) {
+      char upper = char.ToUpperInvariant (c);
+      if (c >= 'A' && c <= 'Z') frequency[upper] = frequency.GetValueOrDefault (upper) + 1;
+   }
 }
 foreach (var letter in frequency.OrderByDescending (x => x.Value).Take (7))
    WriteLine ($"{letter.Key} : {letter.Value}");
