@@ -110,37 +110,41 @@ class Program {
 
    // Creates a common key for solutions with the same symmetry
    static string CanonicalKey (int[] board) {
-      var forms = new List<string> ();
-      int[] current = (int[])board.Clone ();
-      for (int i = 0; i < 4; i++) {
-         forms.Add (string.Join (",", current));
-         current = RotateBoard (current);
+      int size = board.Length;
+      string minKey = string.Join (",", board);
+      var current = (int[])board.Clone ();
+      var next = new int[size];
+      for (int i = 1; i < 4; i++) {
+         RotateBoard (current, next);
+         (current, next) = (next, current);
+         string key = string.Join (",", current);
+         if (StringComparer.Ordinal.Compare (key, minKey) < 0) minKey = key;
       }
-      current = MirrorBoard (board);
+      MirrorBoard (board, next);
+      (current, next) = (next, current);
       for (int i = 0; i < 4; i++) {
-         forms.Add (string.Join (",", current));
-         current = RotateBoard (current);
+         string key = string.Join (",", current);
+         if (StringComparer.Ordinal.Compare (key, minKey) < 0) minKey = key;
+         if (i < 3) {
+            RotateBoard (current, next);
+            (current, next) = (next, current);
+         }
       }
-      forms.Sort ();
-      return forms[0];
+      return minKey;
    }
 
    // Rotates the board 90° clockwise
-   static int[] RotateBoard (int[] board) {
+   static void RotateBoard (int[] board, int[] rotated) {
       int size = board.Length;
-      var rotated = new int[size];
       for (int row = 0; row < size; row++)
          rotated[board[row]] = size - 1 - row;
-      return rotated;
    }
 
    // Mirrors the board horizontally
-   static int[] MirrorBoard (int[] board) {
+   static void MirrorBoard (int[] board, int[] mirrored) {
       int size = board.Length;
-      var mirrored = new int[size];
       for (int row = 0; row < size; row++)
          mirrored[row] = size - 1 - board[row];
-      return mirrored;
    }
 
    // Draws a single board using Unicode box-drawing characters
