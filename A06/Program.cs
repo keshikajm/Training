@@ -13,13 +13,11 @@ using static System.Console;
 class Program {
    static void Main () {
       OutputEncoding = Encoding.UTF8;
-      int[] board = new int[N];
-      var solutions = new List<int[]> ();
-      FindSolutions (board, solutions);
+      var solutions = FindSolutions (N);
       var uniqueSolutions = GetUniqueSolutions (solutions);
       WriteLine ($"Total solutions: {solutions.Count}");
       WriteLine ($"Unique solutions: {uniqueSolutions.Count}\n");
-      bool iShowUnique = SelectSolutions ();
+      bool iShowUnique = SelectSolutions (solutions.Count, uniqueSolutions.Count);
       var toShow = iShowUnique ? uniqueSolutions : solutions;
       WriteLine (iShowUnique ? "\nUNIQUE SOLUTIONS\n" : "\nALL SOLUTIONS\n");
       DisplaySolutions (toShow);
@@ -27,9 +25,10 @@ class Program {
 
    #region Implementation--------------------------------------------
    // Prompts until the user presses A or U, then reports the choice
-   static bool SelectSolutions () {
+   static bool SelectSolutions (int allCount, int uniqueCount) {
       while (true) {
-         WriteLine ("Display (A)ll 92 solutions or (U)nique 12 solutions? [A/U]");
+         WriteLine ($"Display (A)ll {allCount} solutions or (U)nique " +
+                    $"{uniqueCount} solutions? [A/U]");
          switch (ReadKey (true).Key) {
             case ConsoleKey.A: return false;
             case ConsoleKey.U: return true;
@@ -55,12 +54,14 @@ class Program {
    }
 
    // Finds every valid arrangement of non-attacking queens via backtracking
-   static void FindSolutions (int[] board, List<int[]> solutions) {
-      int size = board.Length;
+   static List<int[]> FindSolutions (int size) {
+      var board = new int[size];
+      var solutions = new List<int[]> ();
       var iUsedColumn = new bool[size];
       var iUsedDiagUp = new bool[2 * size - 1];
       var iUsedDiagDown = new bool[2 * size - 1];
       PlaceQueens (board, 0, solutions, iUsedColumn, iUsedDiagUp, iUsedDiagDown);
+      return solutions;
    }
 
    // Uses backtracking to find and store all valid solutions
@@ -82,12 +83,9 @@ class Program {
 
    // O(1) column/diagonal lookup instead of rescanning every prior row
    static bool IsSafe (int row, int col, bool[] iUsedColumn, bool[] iUsedDiagUp,
-                       bool[] iUsedDiagDown) {
-      bool iColumnUsed = iUsedColumn[col];
-      bool iDiagUpUsed = iUsedDiagUp[row + col];
-      bool iDiagDownUsed = iUsedDiagDown[row - col + iUsedColumn.Length - 1];
-      return !iColumnUsed && !iDiagUpUsed && !iDiagDownUsed;
-   }
+                       bool[] iUsedDiagDown)
+      => !iUsedColumn[col] && !iUsedDiagUp[row + col]
+      && !iUsedDiagDown[row - col + iUsedColumn.Length - 1];
 
    // Marks or clears a placement's column/diagonal occupancy
    static void UpdatePosition (int row, int col, bool[] iUsedColumn, bool[] iUsedDiagUp,
@@ -134,14 +132,14 @@ class Program {
    }
 
    // Rotates the board 90° clockwise
-   static void RotateBoard (int[] board, int[] rotated) {
+   static void RotateBoard (ReadOnlySpan<int> board, Span<int> rotated) {
       int size = board.Length;
       for (int row = 0; row < size; row++)
          rotated[board[row]] = size - 1 - row;
    }
 
    // Mirrors the board horizontally
-   static void MirrorBoard (int[] board, int[] mirrored) {
+   static void MirrorBoard (ReadOnlySpan<int> board, Span<int> mirrored) {
       int size = board.Length;
       for (int row = 0; row < size; row++)
          mirrored[row] = size - 1 - board[row];
